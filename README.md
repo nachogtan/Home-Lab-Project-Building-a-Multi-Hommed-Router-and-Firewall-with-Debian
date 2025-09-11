@@ -99,6 +99,8 @@ To verify that all network configurations were successful, I performed a series 
 I used the ping command from both client machines to test their connectivity to an external host on the Internet. A successful ping with a low latency response indicates that the traffic is being properly forwarded and translated by the Debian router.
 
 ```
+Powershell
+
 PS C:\Users\Administrator> ping google.com
 
 Pinging google.com [142.250.178.174] with 32 bytes of data:
@@ -114,6 +116,8 @@ Approximate round trip times in milli-seconds:
 ```
 
 ```
+zsh
+
 ┌──(kali㉿kali)-[~]
 └─$ ping -c 4 google.com
 PING google.com (142.250.184.14) 56(84) bytes of data.
@@ -132,6 +136,8 @@ I used the nslookup command to verify that the clients could resolve external ho
 Bash
 
 ```
+Powershell
+
 PS C:\Users\Administrator> nslookup google.com
 Server:  UnKnown
 Address:  ::1
@@ -143,6 +149,8 @@ Addresses:  2a00:1450:4003:807::200e
 ```
 
 ```
+zsh
+
 ┌──(kali㉿kali)-[~]
 └─$ nslookup google.com
 Server:         8.8.8.8
@@ -160,6 +168,8 @@ I also performed a reverse DNS lookup to confirm that the DNS server could corre
 Bash
 
 ```
+Powershell
+
 PS C:\Users\Administrator> nslookup 8.8.8.8
 Server:  UnKnown
 Address:  ::1
@@ -169,6 +179,8 @@ Address:  8.8.8.8
 ```
 
 ```
+zsh
+
 ┌──(kali㉿kali)-[~]
 └─$ nslookup 8.8.8.8   
 8.8.8.8.in-addr.arpa    name = dns.google.
