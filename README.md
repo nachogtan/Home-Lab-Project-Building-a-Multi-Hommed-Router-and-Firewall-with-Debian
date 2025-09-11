@@ -93,9 +93,87 @@ The Kali Linux VM was connected to a separate LAN to simulate an external networ
 
 ### **Results and Verification**
 
-* *Add screenshots of your tests here. Show the output of a successful `ping` to Google from both your Windows Server and Kali Linux to prove connectivity is working.*
+To verify that all network configurations were successful, I performed a series of tests from both the Windows Server and the Kali Linux machines. These tests confirmed that both clients could successfully access the Internet and that the Debian router was correctly performing NAT.
 
----
+1. Internet Connectivity Test (ping to Google)
+I used the ping command from both client machines to test their connectivity to an external host on the Internet. A successful ping with a low latency response indicates that the traffic is being properly forwarded and translated by the Debian router.
+
+```
+PS C:\Users\Administrator> ping google.com
+
+Pinging google.com [142.250.178.174] with 32 bytes of data:
+Reply from 142.250.178.174: bytes=32 time=19ms TTL=254
+Reply from 142.250.178.174: bytes=32 time=21ms TTL=254
+Reply from 142.250.178.174: bytes=32 time=19ms TTL=254
+Reply from 142.250.178.174: bytes=32 time=19ms TTL=254
+
+Ping statistics for 142.250.178.174:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 19ms, Maximum = 21ms, Average = 19ms
+```
+
+```
+┌──(kali㉿kali)-[~]
+└─$ ping -c 4 google.com
+PING google.com (142.250.184.14) 56(84) bytes of data.
+64 bytes from mad41s10-in-f14.1e100.net (142.250.184.14): icmp_seq=1 ttl=254 time=19.2 ms
+64 bytes from mad41s10-in-f14.1e100.net (142.250.184.14): icmp_seq=2 ttl=254 time=19.7 ms
+64 bytes from mad41s10-in-f14.1e100.net (142.250.184.14): icmp_seq=3 ttl=254 time=20.0 ms
+64 bytes from mad41s10-in-f14.1e100.net (142.250.184.14): icmp_seq=4 ttl=254 time=21.0 ms
+
+--- google.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3005ms
+rtt min/avg/max/mdev = 19.194/19.962/20.995/0.658 ms
+```
+
+2. DNS Resolution Test (nslookup to Google)
+I used the nslookup command to verify that the clients could resolve external hostnames. This confirms that the DNS configuration is working correctly and that the traffic can be translated and routed to the Internet.
+Bash
+
+```
+PS C:\Users\Administrator> nslookup google.com
+Server:  UnKnown
+Address:  ::1
+
+Non-authoritative answer:
+Name:    google.com
+Addresses:  2a00:1450:4003:807::200e
+          142.250.178.174
+```
+
+```
+┌──(kali㉿kali)-[~]
+└─$ nslookup google.com
+Server:         8.8.8.8
+Address:        8.8.8.8#53
+
+Non-authoritative answer:
+Name:   google.com
+Address: 142.250.184.14
+Name:   google.com
+Address: 2a00:1450:4003:803::200e
+```
+
+3. Reverse DNS Lookup Test
+I also performed a reverse DNS lookup to confirm that the DNS server could correctly resolve an IP address to a hostname. This is a good way to verify that your DNS configuration is working as expected.
+Bash
+
+```
+PS C:\Users\Administrator> nslookup 8.8.8.8
+Server:  UnKnown
+Address:  ::1
+
+Name:    dns.google
+Address:  8.8.8.8
+```
+
+```
+┌──(kali㉿kali)-[~]
+└─$ nslookup 8.8.8.8   
+8.8.8.8.in-addr.arpa    name = dns.google.
+```
+The successful results of these tests demonstrate that the Debian router is correctly configured to provide NAT and act as the gateway for both the Windows and Kali networks.
 
 ### **Next Steps**
 
