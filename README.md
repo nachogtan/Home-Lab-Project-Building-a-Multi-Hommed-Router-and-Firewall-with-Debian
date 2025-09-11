@@ -19,7 +19,7 @@ This project focuses on building a secure virtual network environment to gain ha
 ### **Topology Diagram**
 
 *Insert a screenshot or image of your network diagram here. This is a crucial step for visualizing the network architecture.*
-
+<img width="1954" height="891" alt="home-lab-network" src="https://github.com/user-attachments/assets/da24706c-f177-4774-845b-e942185b1942" />
 ---
 
 ### **Lab Components**
