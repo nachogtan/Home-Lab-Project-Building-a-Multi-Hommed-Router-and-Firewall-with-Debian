@@ -76,20 +76,20 @@ The Windows Server was configured with two network adapters, each serving a spec
 
 - Internal LAN Interface: This interface is connected to the Debian router. It uses a static IP address and serves as the Domain Controller and DNS server for the internal network.
   
-    -- IP Address: 192.168.60.20
-    - Subnet Mask: 255.255.255.0
-    - Default Gateway: 192.168.60.1
-    - DNS Server: 192.168.60.20 (specified as the server itself)
+    - IP Address: `192.168.60.20`
+    - Subnet Mask: `255.255.255.0`
+    - Default Gateway: `192.168.60.1`
+    - DNS Server: `192.168.60.20` (specified as the server itself)
 
-- Host-Only Network Interface: This interface is dedicated to sending security event logs to the Splunk server via the Splunk Universal Forwarder. Its IP address was automatically assigned via DHCP.
+- Host-Only Network Interface: This interface is dedicated to sending security event logs to the Splunk server via the Splunk Universal Forwarder. Its IP address was automatically assigned via **DHCP**.
 
 Kali Linux Configuration
 The Kali Linux VM was connected to a separate LAN to simulate an external network. A static IP was assigned to ensure a consistent point of origin for simulated attacks.
 
-- IP Address: 192.168.70.30
-- Subnet Mask: 255.255.255.0
-- Default Gateway: 192.168.70.1
-- DNS Server: 8.8.8.8 (a public DNS was used for Internet hostname resolution)"
+- IP Address: `192.168.70.30`
+- Subnet Mask: `255.255.255.0`
+- Default Gateway: `192.168.70.1`
+- DNS Server: `8.8.8.8` (a public DNS was used for Internet hostname resolution)"
 
 ### **Results and Verification**
 
