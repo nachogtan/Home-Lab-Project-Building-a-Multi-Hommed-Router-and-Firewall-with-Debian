@@ -2,7 +2,7 @@
 
 ### **Project Summary**
 
-This project focuses on building a secure virtual network environment to gain hands-on experience with cybersecurity, network administration, and log analysis. The primary objective was to configure a Debian server to act as a central **router** and **firewall** for two isolated networks: one for a **Windows Server** and another for a **Kali Linux** machine.
+This project focuses on building a secure virtual network environment to establish a secure, segmented network and a centralized log collection system to analyze and respond to simulated security events, network administration, and log analysis. The primary objective was to configure a Debian server to act as a central **router** and **firewall** for two isolated networks: one for a **Windows Server** and another for a **Kali Linux** machine.
 
 ---
 
