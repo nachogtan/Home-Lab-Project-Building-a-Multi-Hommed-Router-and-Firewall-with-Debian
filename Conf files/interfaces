@@ -1,0 +1,32 @@
+# This file describes the network interfaces available on your system
+#and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary netwok inteface
+allow-hotplug enp0s3
+iface enp0s3 inet dhcp
+# This is an autoconfigured IPV6 interface
+iface enp0s3 inet6 auto
+
+#Windows Server interface
+auto enp0s8
+iface enp0s8 inet static
+	address 192.168.60.1
+	netmask 255.255.255.0
+
+#Kali interface
+auto enp0s9
+iface enp0s9 inet static
+	address 192.168.70.1
+	netmask 255.255.255.0
+
+#Splunk instance interface
+auto enp0s10
+iface enp0s10 inet static
+	address 192.168.56.10
+	netmask 255.255.255.0
