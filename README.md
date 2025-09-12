@@ -46,7 +46,26 @@ The first step was to set up the Debian server as a router. I edited the /etc/ne
 
 <img width="803" height="618" alt="interfaces-conf" src="https://github.com/user-attachments/assets/94e3c3d8-af21-4f6a-b6f2-c7ccdca0d9e8" />
 
-#### **Step 2: Enable IP Forwarding**
+#### **Step 2: VirtualBox Network Configuration**
+
+The home lab was built using the virtualization software VirtualBox to simulate a real-world network environment. The goal was to create a segmented network where an external machine (Kali Linux) attempts to interact with an internal network (Windows Server), with a Debian router/firewall filtering all traffic.
+
+To achieve this, the following network configurations were implemented:
+Debian Router/Firewall
+- Adapter 1: NAT Network (for Internet access)
+- Adapter 2: Internal Network (intnet-windows-firewall)
+- Adapter 3: Internal Network (intnet-kali-firewall)
+
+Windows Server
+- Adapter 1: Internal Network (intnet-windows-firewall)
+- Adapter 2: Host-Only Network (used for log forwarding to the Splunk instance)
+
+Kali Linux
+- Adapter 1: Internal Network (intnet-kali-firewall)
+
+This setup ensures that all communication between the client VMs and the Internet is routed exclusively through the Debian firewall, allowing for centralized traffic control and log analysis.
+
+#### **Step 3: Enable IP Forwarding**
 
 Now that the interfaces are configured and IPs have been designated, the next step was to enable IP forwarding to allow the Debian server to act as a router. By default, a Linux server only processes network traffic for itself. Enabling IP forwarding tells the kernel to pass traffic from one interface to the others, allowing the internal networks to communicate with the Internet.
 
@@ -54,7 +73,7 @@ To enable IP forwarding persistently, I edited the `/etc/sysctl.conf` file. This
 
 After saving the file, the `sudo sysctl -p` command applied the changes immediately without the need to reboot the server.
 
-#### **Step 3: Configure NAT with `iptables`**
+#### **Step 4: Configure NAT with `iptables`**
 
 To preserve the IP addresses of the internal systems, the Debian server must provide Network Address Translation (NAT). NAT allows internal networks to reach the Internet by translating a private IP address into a public IP address. This way, all devices on a private network can share a single public IP address, which also helps in mitigating IPv4 depletion.
 
@@ -68,7 +87,7 @@ To save this rule and made it persistent after reboot i saved it into the `rules
 ```
 sudo iptables-save > /etc/iptables/rules.v4
 ```
-#### **Step 4: Configure the Clients (Windows & Kali)**
+#### **Step 5: Configure the Clients (Windows & Kali)**
 
 The final step was to configure the client machines to use the Debian router as their gateway. For both the Windows Server and Kali Linux VMs, I manually configured a static IP address, subnet mask, and default gateway through their respective network settings GUIs.
 
@@ -91,6 +110,14 @@ The Kali Linux VM was connected to a separate LAN to simulate an external networ
 - Subnet Mask: `255.255.255.0`
 - Default Gateway: `192.168.70.1`
 - DNS Server: `8.8.8.8` (a public DNS was used for Internet hostname resolution)"
+
+#### **Step 6: Install and Configure Splunk Universal Forwarder**
+
+To establish the centralized log collection system, the Splunk Universal Forwarder was installed on the Windows Server. This agent is designed to collect security event logs from the host and forward them to the Splunk instance for analysis.
+
+The installation was performed using the graphical user interface (GUI) and the built-in setup wizard. During the configuration process, the forwarder was pointed to the IP address of the Splunk instance and configured to listen on the correct port to forward the Windows security event logs.
+
+This setup ensures that security-relevant information from the Domain Controller is continuously collected, allowing for real-time monitoring and historical analysis of security events.
 
 ### **Results and Verification**
 
@@ -187,6 +214,7 @@ zsh
 8.8.8.8.in-addr.arpa    name = dns.google.
 ```
 The successful results of these tests demonstrate that the Debian router is correctly configured to provide NAT and act as the gateway for both the Windows and Kali networks.
+
 
 ### **Next Steps**
 
