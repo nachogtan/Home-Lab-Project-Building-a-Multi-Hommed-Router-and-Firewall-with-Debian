@@ -20,7 +20,7 @@ This project focuses on building a secure virtual network environment to establi
 
 The network was segmented to simulate a real-world environment where an external threat actor attempts to gain a foothold into the internal network.
 
-<img width="1931" height="868" alt="home-lab-network" src="https://github.com/user-attachments/assets/05d14072-292e-45ae-bbb2-2f658f0d0ea2" />
+<img width="1319" height="897" alt="home-lab-top" src="https://github.com/user-attachments/assets/fee2793d-4774-40cd-8dd4-6bd1d6f7c862" />
 
 ---
 
