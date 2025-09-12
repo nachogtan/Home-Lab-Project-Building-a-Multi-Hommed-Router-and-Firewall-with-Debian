@@ -42,7 +42,7 @@ The network was segmented to simulate a real-world environment where an external
 
 #### **Step 1: Configure Network Interfaces on Debian**
 
-The first step was to set up the Debian server as a multi-homed router and firewall. I edited the /etc/network/interfaces file to assign a static IP to each network, allowing the Debian VM to serve as the default gateway for the internal Windows Server and Kali Linux machines.
+The first step was to set up the Debian server as a multi-homed router and firewall. I edited the `/etc/network/interfaces` file to assign a static IP to each network, allowing the Debian VM to serve as the default gateway for the internal Windows Server and Kali Linux machines.
 
 The following network interfaces were configured on the Debian router to create a secure, segmented lab environment:
 - `enp0s3` (WAN Interface): This interface was configured with `DHCP` to provide Internet connectivity to the router.
@@ -139,7 +139,7 @@ To configure log forwarding, the rsyslog service, which manages system logs on D
 1. Create the rsyslog Configuration File
 
 ```bash
-sudo nano /etc/rsyslog.d/50-firewall.conf
+sudo nano /etc/rsyslog.d/firewall.conf
 ```
 2. Add the Log Forwarding Rule
 The following rule was added to the new file to forward all logs to the Splunk host's IP address and listening port:
