@@ -91,11 +91,11 @@ To preserve the IP addresses of the internal systems, the Debian server must pro
 To set up the NAT service, I added a `POSTROUTING` rule to the `nat` table in `iptables`. This rule specifies that any traffic leaving the router through the public-facing interface (`enp0s3`) should have its source IP address changed to the router's public IP. The `MASQUERADE` target was used because it automatically handles the router's dynamic public IP address.
 
 Here is the rule I created:
-```
+```bash
 sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
 ```
 To save this rule and made it persistent after reboot i saved it into the `rules.v4` file.
-```
+```bash
 sudo iptables-save > /etc/iptables/rules.v4
 ```
 #### **Step 5: Configure the Clients (Windows & Kali)**
@@ -138,23 +138,20 @@ To configure log forwarding, the rsyslog service, which manages system logs on D
 
 1. Create the rsyslog Configuration File
 
-```
-bash
+```bash
 sudo nano /etc/rsyslog.d/50-firewall.conf
 ```
 2. Add the Log Forwarding Rule
 The following rule was added to the new file to forward all logs to the Splunk host's IP address and listening port:
 
-```
-bash
+```bash
 *.* @192.168.56.1:9997
 ```
 
 3. Restart the rsyslog Service
 After saving the file, the rsyslog service was restarted to apply the changes:
 
-```
-bash
+```bash
 sudo systemctl restart rsyslog
 ```
 
@@ -165,9 +162,7 @@ To verify that all network configurations were successful, I performed a series 
 1. Internet Connectivity Test (ping to Google)
 I used the ping command from both client machines to test their connectivity to an external host on the Internet. A successful ping with a low latency response indicates that the traffic is being properly forwarded and translated by the Debian router.
 
-```
-Powershell
-
+```Powershell
 PS C:\Users\Administrator> ping google.com
 
 Pinging google.com [142.250.178.174] with 32 bytes of data:
@@ -182,9 +177,7 @@ Approximate round trip times in milli-seconds:
     Minimum = 19ms, Maximum = 21ms, Average = 19ms
 ```
 
-```
-zsh
-
+```zsh
 ┌──(kali㉿kali)-[~]
 └─$ ping -c 4 google.com
 PING google.com (142.250.184.14) 56(84) bytes of data.
@@ -202,9 +195,7 @@ rtt min/avg/max/mdev = 19.194/19.962/20.995/0.658 ms
 I used the nslookup command to verify that the clients could resolve external hostnames. This confirms that the DNS configuration is working correctly and that the traffic can be translated and routed to the Internet.
 Bash
 
-```
-Powershell
-
+```Powershell
 PS C:\Users\Administrator> nslookup google.com
 Server:  UnKnown
 Address:  ::1
@@ -215,9 +206,7 @@ Addresses:  2a00:1450:4003:807::200e
           142.250.178.174
 ```
 
-```
-zsh
-
+```zsh
 ┌──(kali㉿kali)-[~]
 └─$ nslookup google.com
 Server:         8.8.8.8
@@ -234,9 +223,7 @@ Address: 2a00:1450:4003:803::200e
 I also performed a reverse DNS lookup to confirm that the DNS server could correctly resolve an IP address to a hostname. This is a good way to verify that your DNS configuration is working as expected.
 Bash
 
-```
-Powershell
-
+```Powershell
 PS C:\Users\Administrator> nslookup 8.8.8.8
 Server:  UnKnown
 Address:  ::1
@@ -245,9 +232,7 @@ Name:    dns.google
 Address:  8.8.8.8
 ```
 
-```
-zsh
-
+```zsh
 ┌──(kali㉿kali)-[~]
 └─$ nslookup 8.8.8.8   
 8.8.8.8.in-addr.arpa    name = dns.google.
@@ -256,8 +241,7 @@ zsh
 
 A direct ping from the Debian router to the Splunk instance was blocked by a firewall rule on the host machine. Instead, a port connectivity test was performed using nc (Netcat) to confirm that the router could successfully reach the Splunk server's listening port.
 
-```
-bash
+```bash
 nacho@firewall-debian:~$ nc -vz 192.168.56.1 9997
 192.168.56.1: inverse host lookup failed: Unknown host
 (UNKNOWN) [192.168.56.1] 9997 (?) open
