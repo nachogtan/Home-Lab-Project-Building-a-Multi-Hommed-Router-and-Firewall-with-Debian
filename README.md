@@ -42,19 +42,30 @@ The network was segmented to simulate a real-world environment where an external
 
 #### **Step 1: Configure Network Interfaces on Debian**
 
-The first step was to set up the Debian server as a router. I edited the /etc/network/interfaces file to assign a static IP to each network, allowing the Debian VM to serve as a default gateway for the internal Windows Server and the Kali machine. The **enp0s3** interface was configured with DHCP, which provides Internet connectivity to the router. The LAN-Windows interface (**enp0s8**) was set up as the gateway for the **192.168.60.0/24** subnet, while the LAN-Kali interface (**enp0s9**) served as the gateway for the **192.168.70.0/24** subnet.
+The first step was to set up the Debian server as a multi-homed router and firewall. I edited the /etc/network/interfaces file to assign a static IP to each network, allowing the Debian VM to serve as the default gateway for the internal Windows Server and Kali Linux machines.
 
-<img width="803" height="618" alt="interfaces-conf" src="https://github.com/user-attachments/assets/94e3c3d8-af21-4f6a-b6f2-c7ccdca0d9e8" />
+The following network interfaces were configured on the Debian router to create a secure, segmented lab environment:
+- `enp0s3` (WAN Interface): This interface was configured with `DHCP` to provide Internet connectivity to the router.
+- `enp0s8` (Windows LAN Interface): This interface was configured with a static IP (`192.168.60.1`) to act as the gateway for the `192.168.60.0/24` subnet.
+- `enp0s9` (Kali LAN Interface): This interface was configured with a static IP (`192.168.70.1`) to act as the gateway for the `192.168.70.0/24` subnet.
+- `enp0s10` (Splunk Log Interface): This interface was configured with a static IP (`192.168.56.10`) to provide a dedicated connection for log forwarding to the Splunk instance on the physical host machine.
+
+The network configuration was then applied to the system to ensure all interfaces were active and correctly assigned.
+
+<img width="684" height="500" alt="interfaces-conf" src="https://github.com/user-attachments/assets/a2f35e3a-018f-4581-b572-6d3851982f38" />
+
 
 #### **Step 2: VirtualBox Network Configuration**
 
 The home lab was built using the virtualization software VirtualBox to simulate a real-world network environment. The goal was to create a segmented network where an external machine (Kali Linux) attempts to interact with an internal network (Windows Server), with a Debian router/firewall filtering all traffic.
 
 To achieve this, the following network configurations were implemented:
+
 Debian Router/Firewall
 - Adapter 1: NAT Network (for Internet access)
 - Adapter 2: Internal Network (intnet-windows-firewall)
 - Adapter 3: Internal Network (intnet-kali-firewall)
+- Adapter 4: Host-Only Network (used for log forwarding to the Splunk instance)
 
 Windows Server
 - Adapter 1: Internal Network (intnet-windows-firewall)
@@ -118,6 +129,34 @@ To establish the centralized log collection system, the Splunk Universal Forward
 The installation was performed using the graphical user interface (GUI) and the built-in setup wizard. During the configuration process, the forwarder was pointed to the IP address of the Splunk instance and configured to listen on the correct port to forward the Windows security event logs.
 
 This setup ensures that security-relevant information from the Domain Controller is continuously collected, allowing for real-time monitoring and historical analysis of security events.
+
+#### **Step 7: Configure Firewall Log Forwarding**
+
+To ensure that all security events from the firewall are centrally monitored, the Debian router was configured to forward its logs to the Splunk instance. This is a critical step in security operations, as it allows for real-time analysis of network traffic and alerts.
+
+To configure log forwarding, the rsyslog service, which manages system logs on Debian, was used. A new configuration file was created to instruct rsyslog to send all logs to the Splunk server.
+
+1. Create the rsyslog Configuration File
+
+```
+bash
+sudo nano /etc/rsyslog.d/50-firewall.conf
+```
+2. Add the Log Forwarding Rule
+The following rule was added to the new file to forward all logs to the Splunk host's IP address and listening port:
+
+```
+bash
+*.* @192.168.56.1:9997
+```
+
+3. Restart the rsyslog Service
+After saving the file, the rsyslog service was restarted to apply the changes:
+
+```
+bash
+sudo systemctl restart rsyslog
+```
 
 ### **Results and Verification**
 
@@ -213,8 +252,18 @@ zsh
 └─$ nslookup 8.8.8.8   
 8.8.8.8.in-addr.arpa    name = dns.google.
 ```
-The successful results of these tests demonstrate that the Debian router is correctly configured to provide NAT and act as the gateway for both the Windows and Kali networks.
+4. Router to Splunk Connectivity Test (Port Test)
 
+A direct ping from the Debian router to the Splunk instance was blocked by a firewall rule on the host machine. Instead, a port connectivity test was performed using nc (Netcat) to confirm that the router could successfully reach the Splunk server's listening port.
+
+```
+bash
+nacho@firewall-debian:~$ nc -vz 192.168.56.1 9997
+192.168.56.1: inverse host lookup failed: Unknown host
+(UNKNOWN) [192.168.56.1] 9997 (?) open
+```
+
+The successful results of these tests demonstrate that the Debian router is correctly configured to provide NAT, act as a gateway, and forward logs. The ping and nslookup tests confirmed that all client machines had full network connectivity to the Internet, while the port test verified that the log forwarding path from the router to the Splunk instance was also fully functional.
 
 ### **Next Steps**
 
