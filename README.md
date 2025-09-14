@@ -145,7 +145,7 @@ sudo nano /etc/rsyslog.d/firewall.conf
 The following rule was added to the new file to forward all logs to the Splunk host's IP address and listening port:
 
 ```bash
-*.* @192.168.56.1:9997
+*.* @192.168.56.1:514
 ```
 
 3. Restart the rsyslog Service
