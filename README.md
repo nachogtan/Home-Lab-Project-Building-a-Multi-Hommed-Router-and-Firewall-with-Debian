@@ -242,9 +242,9 @@ Address:  8.8.8.8
 A direct ping from the Debian router to the Splunk instance was blocked by a firewall rule on the host machine. Instead, a port connectivity test was performed using nc (Netcat) to confirm that the router could successfully reach the Splunk server's listening port.
 
 ```bash
-nacho@firewall-debian:~$ nc -vz 192.168.56.1 9997
+nacho@firewall-debian:~$ nc -vu 192.168.56.1 514
 192.168.56.1: inverse host lookup failed: Unknown host
-(UNKNOWN) [192.168.56.1] 9997 (?) open
+(UNKNOWN) [192.168.56.1] 514 (syslog) OPEN
 ```
 
 The successful results of these tests demonstrate that the Debian router is correctly configured to provide NAT, act as a gateway, and forward logs. The ping and nslookup tests confirmed that all client machines had full network connectivity to the Internet, while the port test verified that the log forwarding path from the router to the Splunk instance was also fully functional.
